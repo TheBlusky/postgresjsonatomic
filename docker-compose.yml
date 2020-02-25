@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+
+  postgres:
+    image: postgres:10
+    environment:
+      - "POSTGRES_USER=app"
+      - "POSTGRES_PASSWORD=app"
+
+  django:
+    image: python:3
+    command: sh setup.sh
+    working_dir: /app
+    volumes:
+      - "./:/app"
+    ports:
+    - 8000:8000
+    links:
+      - postgres
+
+  test:
+    image: alpine:latest
+    command: sh test.sh
+    working_dir: /app
+    volumes:
+      - "./:/app"
+    links:
+      - django
